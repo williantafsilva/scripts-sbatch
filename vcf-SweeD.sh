@@ -25,9 +25,9 @@
 ##			-N 1 \
 ##			-n 5 \ ##--mem=100GB \
 ##  		-t 0-10:00:00 \
-##			-J vcf-SweeDoutput-${F##*/} \
+##			-J vcf-SweeD-${F##*/} \
 ##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-##			vcf-SweeDoutput.sh <OUTPUT LOCATION> ${F} 
+##			vcf-SweeD.sh <OUTPUT LOCATION> ${F} 
 ##done
 
 ############################################################################
