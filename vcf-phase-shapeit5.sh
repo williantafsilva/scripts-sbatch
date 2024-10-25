@@ -59,7 +59,7 @@ if [[ -z "${SLURM_JOB_ID}" ]] ; then JOBID=${RUNDATE} ; else JOBID=${SLURM_JOB_I
 SUBMITTEDSCRIPT=$(echo "${PATHTOMYSUBMITTEDSCRIPTS}/job${JOBID}-date${RUNDATE}-${SCRIPTNAME}") 
 SLURMFILE=$(echo "${PATHTOMYSLURM}/slurm-${JOBID}.out") 
 SLURM_JOB_TIMELIMIT=$(squeue -j $SLURM_JOB_ID -h --Format TimeLimit)
-OUTPUTLOCATION=$(echo $(readlink -f $1))
+OUTPUTLOCATION=$(readlink -f $1)
 
 echo "SUBMISSION ($(date +"%Y-%m-%d @ %H:%M:%S")): 
 User (\$USER): ${USER}
@@ -130,10 +130,10 @@ echo "##INPUT:"
 echo 
 
 ##Input file.
-INPUTFILE=$(echo $(readlink -f $2))
+INPUTFILE=$(readlink -f $2)
 INPUTFILELOCATION=${INPUTFILE%/*}
 INPUTFILENAME=${INPUTFILE##*/}
-HAPLOIDLIST=$(echo $(readlink -f $3)) ##List of haploid chromosomes.
+HAPLOIDLIST=$(readlink -f $3) ##List of haploid chromosomes.
 echo "INPUTFILE: ${INPUTFILE}
 INPUTFILELOCATION: ${INPUTFILELOCATION}
 INPUTFILENAME: ${INPUTFILENAME}

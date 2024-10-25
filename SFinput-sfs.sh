@@ -58,7 +58,7 @@ if [[ -z "${SLURM_JOB_ID}" ]] ; then JOBID=${RUNDATE} ; else JOBID=${SLURM_JOB_I
 SUBMITTEDSCRIPT=$(echo "${PATHTOMYSUBMITTEDSCRIPTS}/job${JOBID}-date${RUNDATE}-${SCRIPTNAME}") 
 SLURMFILE=$(echo "${PATHTOMYSLURM}/slurm-${JOBID}.out") 
 SLURM_JOB_TIMELIMIT=$(squeue -j $SLURM_JOB_ID -h --Format TimeLimit)
-OUTPUTLOCATION=$(echo $(readlink -f $1))
+OUTPUTLOCATION=$(readlink -f $1)
 
 echo "SUBMISSION ($(date +"%Y-%m-%d @ %H:%M:%S")): 
 User (\$USER): ${USER}
@@ -128,7 +128,7 @@ echo "##INPUT:"
 echo 
 
 ##Input directory.
-INPUTDIR=$(echo $(readlink -f $2))
+INPUTDIR=$(readlink -f $2)
 INPUTDIRLOCATION=${INPUTDIR%/*}
 INPUTDIRNAME=${INPUTDIR##*/}
 echo "INPUTDIR: ${INPUTDIR}
