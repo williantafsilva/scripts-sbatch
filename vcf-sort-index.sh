@@ -27,7 +27,7 @@
 ##  		-t 0-05:00:00 \
 ##			-J vcf-sort-${F##*/} \
 ##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-##			vcf-sort.sh <OUTPUT LOCATION> ${F} 
+##			vcf-sort-index.sh <OUTPUT LOCATION> ${F} 
 ##done
 
 ############################################################################
