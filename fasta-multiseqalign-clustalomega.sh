@@ -25,7 +25,7 @@
 ##			-N 1 \
 ##			-n 5 \ ##--mem=100GB \
 ##  		-t 0-06:00:00 \
-##			-J clustalomega-multiseqalign-${F##*/} \
+##			-J multiseqalign-clustalomega-${F##*/} \
 ##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
 ##			fasta-multiseqalign-clustalomega.sh <OUTPUT LOCATION> ${F} 
 ##done
