@@ -25,7 +25,7 @@
 ##			-N 1 \
 ##			-n 5 \ ##--mem=100GB \
 ##  		-t 0-05:00:00 \
-##			-J vcf-sort-${F##*/} \
+##			-J vcf-sort-index-${F##*/} \
 ##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
 ##			vcf-sort-index.sh <OUTPUT LOCATION> ${F} 
 ##done
