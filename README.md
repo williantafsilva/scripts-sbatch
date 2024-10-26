@@ -64,6 +64,35 @@ sbatch \
 	bcf-vcf.sh <OUTPUT LOCATION> <BCF FILE>
 ```
 
+## fasta-multiseqalign-clustalomega.sh
+
+- Align FASTA sequences using ClustalOmega.
+
+- Input 1: Output location.
+
+- Input 2: FASTA file (\*.fa or \*.fasta) with sequences to align.
+
+- Output : Alignment file (\*.clustalo-job\*.fa).
+
+- Usage:
+
+```
+fasta-multiseqalign-clustalomega.sh <OUTPUT LOCATION> <FASTA FILE>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J multiseqalign-clustalomega \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	fasta-multiseqalign-clustalomega.sh <OUTPUT LOCATION> <FASTA FILE>
+```
+
 ## refseq-query.sh
 
 - Retrieve sequence from reference FASTA file.
@@ -94,4 +123,39 @@ sbatch \
 	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
 	refseq-query.sh <OUTPUT LOCATION> <FASTA FILE> <SEQUENCE RANGE>
 ```
+
+## Rscript.sh
+
+- Run R script.
+
+- Input 1: R script file name (\*.R).
+
+- Input 2: Output location.
+
+- Input 3: R script input arguments.
+
+- Output : R script output.
+
+- Usage:
+
+```
+Rscript.sh <R SCRIPT FILE NAME> <OUTPUT LOCATION> <ARGS>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J Rscript \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	Rscript.sh <R SCRIPT FILE NAME> <OUTPUT LOCATION> <ARGS>
+```
+
+
+
+
 
