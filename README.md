@@ -155,6 +155,96 @@ sbatch \
 	Rscript.sh <R SCRIPT FILE NAME> <OUTPUT LOCATION> <ARGS>
 ```
 
+## SF2input-SF2output.sh
+
+- Generate SweepFinder2 output files.
+
+- Input 1: Output location.
+
+- Input 2: SweepFinder2 input file (\*.SFformat-job\*.SF2input).
+
+- Input 3: Site frequency spectrum file (\*.SF2sfs-job\*.SF2sfs).
+
+- Output: SweepFinder2 output file (\*.SF2-job\*.SF2output).
+
+- Usage:
+
+```
+SF2input-SF2output.sh <OUTPUT LOCATION> <.SF2input FILE> <.SF2sfs FILE>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J SF2input-SF2output \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	SF2input-SF2output.sh <OUTPUT LOCATION> <.SF2input FILE> <.SF2sfs FILE>
+```
+
+## SF2input-SF2sfs.sh
+
+- Create a site frequency spectrum (SFS) file using SweepFinder2.
+
+- Input 1: Output location.
+
+- Input 2: Directory containing all SweepFinder2 input files (\*.SFformat-job\*.SF2input).
+
+- Output: Concatenated \*.SF2input file (\*.SF2sfs-job\*.concatSF2input) and SFS file (\*.SF2sfs-job\*.SF2sfs).
+
+- Usage:
+
+```
+SF2input-SF2sfs.sh <OUTPUT LOCATION> <INPUT DIRECTORY>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J SF2input-SF2sfs \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	SF2input-SF2sfs.sh <OUTPUT LOCATION> <INPUT DIRECTORY>
+```
+
+## vcf-addAC.sh
+
+- Add AC field to VCF file.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz).
+
+- Output: VCF file (\*.addAC-job\*.vcf.gz).
+
+- Usage:
+
+```
+vcf-addAC.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-addAC \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-addAC.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+
 
 
 
