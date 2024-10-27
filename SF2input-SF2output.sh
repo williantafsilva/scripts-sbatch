@@ -10,24 +10,25 @@
 ##SCRIPT DESCRIPTION:
 
 ##Description:
-##Generate SweepFinder2 input files (.SFinput).
+##Generate SweepFinder2 output files.
 
 ##Input $1: Output location.
-##Input $2: VCF file (.vcf.gz) split per chromosome/contig.
-##Output: SweepFinder2 input file (.SFinput).
+##Input $2: SweepFinder2 input file (.SF2input).
+##Input $3: Site frequency spectrum file (.SF2sfs).
+##Output: SweepFinder2 output file (.SF2output).
 
 ##Usage (bulk submission): 
-##find <PATH TO DIRECTORY>/*.vcf.gz -maxdepth 0 | while read F ; do 
+##find <PATH TO DIRECTORY>/*.SF2input -maxdepth 0 | while read F ; do 
 ##    sbatch \
-##			-A ${PROJECT_ID} \
-##			-o ${MYSLURMFILE} \
-##			-p shared \
-##			-N 1 \
-##			-n 5 \ ##--mem=100GB \
-##  		-t 0-12:00:00 \
-##			-J vcf-SFinput-${F##*/} \
-##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-##			vcf-SFinput.sh <OUTPUT LOCATION> ${F} 
+##          -A ${PROJECT_ID} \
+##          -o ${MYSLURMFILE} \
+##          -p shared \
+##          -N 1 \
+##          -n 5 \ ##--mem=100GB \
+##          -t 0-24:00:00 \
+##          -J SF2input-SF2output-${F##*/} \
+##          --dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+##          SF2input-SF2output.sh <OUTPUT LOCATION> ${F} <.SF2sfs>
 ##done
 
 ############################################################################
@@ -50,7 +51,7 @@ echo "##########################################################################
 echo "##SCRIPT CONTROL:"
 echo 
 
-SCRIPTNAME=$(echo "vcf-SFinput.sh") 
+SCRIPTNAME=$(echo "SF2input-SF2output.sh") 
 
 RUNDATE=$(date +"%Y%m%d%H%M%S")
 PATHTOSCRIPT=$(echo "${PATHTOMYSBATCHSCRIPTS}/${SCRIPTNAME}") 
@@ -109,12 +110,13 @@ echo "##LOAD TOOLS:"
 echo 
 
 if [[ $(hostname -f) == *uppmax* ]] ; then 
-	module load bioinfo-tools
-	module load vcftools
+    module load bioinfo-tools
+    module load SweepFinder2
 elif [[ $(hostname -f) == *pdc* ]] ; then
-	module load systemdefault/1.0.0
-	module load bioinfo-tools
-	module load vcftools
+    module load systemdefault/1.0.0
+    module load UPPMAX/1.0.0
+    module load bioinfo-tools
+    module load SweepFinder2
 fi
 
 echo 
@@ -130,9 +132,11 @@ echo
 INPUTFILE=$(readlink -f $2)
 INPUTFILELOCATION=${INPUTFILE%/*}
 INPUTFILENAME=${INPUTFILE##*/}
+INPUTSFSFILE=$(echo $(readlink -f $3)) ##.SF2sfs file.
 echo "INPUTFILE: ${INPUTFILE}
 INPUTFILELOCATION: ${INPUTFILELOCATION}
 INPUTFILENAME: ${INPUTFILENAME}
+INPUTSFSFILE: ${INPUTSFSFILE}
 "
 
 echo 
@@ -140,8 +144,8 @@ echo "##OUTPUT:"
 echo 
 
 ##Output file (as an extension of the input file/directory).
-OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//')
-OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.SFformat-job${JOBID}.SFinput") 
+OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.SF2input.*$//' | sed 's/-job[0-9].*$//')
+OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.SF2-job${JOBID}.SF2output") 
 OUTPUTFILE=$(echo "${OUTPUTLOCATION}/${OUTPUTFILENAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
 OUTPUTFILEPREFIX: ${OUTPUTFILEPREFIX}
@@ -154,12 +158,21 @@ echo "##########################################################################
 echo "##PROCESSING FILE: ${INPUTFILE}"
 echo 
 
-vcftools --gzvcf ${INPUTFILE} --counts2 --out $(echo "${OUTPUTLOCATION}/${OUTPUTFILEPREFIX}-job${JOBID}") ##Get allele counts from the VCF files.
+##Calculate parameters.
+SEQINTERVAL=10000 ##Genetic interval (bp).
+POSMAX=$(tail -n+2 ${INPUTFILE} | awk 'NR==1{max = $1 + 0; next} {if ($1 > max) max = $1;} END {print max}') ##Max position.
+POSMIN=$(tail -n+2 ${INPUTFILE} | awk 'NR==1{min = $1 + 0; next} {if ($1 < min) min = $1;} END {print min}') ##Min position.
+NSITES=$(echo "$(((${POSMAX}-${POSMIN})/${SEQINTERVAL}+1))") ##Number of sites (grid size).
+
+cd ${OUTPUTLOCATION}
+if [[ -z "${INPUTSFSFILE}" ]] ; then
+    ##Scan for selective sweeps without pre-computed empirical spectrum (.SF2sfs).
+    SweepFinder2 -s ${NSITES} ${INPUTFILE} ${OUTPUTFILE}
+else
+    ##Scan for selective sweeps with pre-computed empirical spectrum (.SF2sfs).
+    SweepFinder2 -l ${NSITES} ${INPUTFILE} ${INPUTSFSFILE} ${OUTPUTFILE}
+fi
 sleep 5s
-tail -n+2 $(echo "${OUTPUTLOCATION}/${OUTPUTFILEPREFIX}-job${JOBID}.frq.count") | awk -v OFS="\t" '{print $2,$6,$4,"1"}' | sed '1 i\position\tx\tn\tfolded' > ${OUTPUTFILE} ##Format output files to SweepFinder2 standard.
-sleep 5s
-rm -f $(echo "${OUTPUTLOCATION}/${OUTPUTFILEPREFIX}-job${JOBID}.frq.count") ##Remove .frq.count files.
-rm -f $(echo "${OUTPUTLOCATION}/${OUTPUTFILEPREFIX}-job${JOBID}.log") ##Remove .log files.
 
 echo 
 echo "############################################################################"
@@ -171,6 +184,7 @@ Date: ${RUNDATE}
 Job ID: ${JOBID}
 Script: ${SUBMITTEDSCRIPT}
 Input file: ${INPUTFILE}
+Input SFS file: ${INPUTSFSFILE}
 Output file: ${OUTPUTFILE}
 " >> $(echo "${OUTPUTLOCATION}/README.txt") 
 

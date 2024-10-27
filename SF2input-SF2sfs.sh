@@ -10,11 +10,11 @@
 ##SCRIPT DESCRIPTION:
 
 ##Description:
-##Create a site frequency spectrum (SFS) file (all.SFsfs) using SweepFinder2.
+##Create a site frequency spectrum (SFS) file (.SF2sfs) using SweepFinder2.
 
 ##Input $1: Output location.
-##Input $2: Directory containing all .SFinput files.
-##Output: .concatSFinput and .SFsfs files.
+##Input $2: Directory containing all .SF2input files.
+##Output: .concatSF2input and .SF2sfs files.
 
 ##Usage (bulk submission): 
 ##find *_INPUTDIRECTORY -maxdepth 0 | while read D ; do 
@@ -25,9 +25,9 @@
 ##			-N 1 \
 ##			-n 5 \ ##--mem=100GB \
 ##  		-t 1-00:00:00 \
-##			-J SFinput-sfs-${D##*/} \
+##			-J SF2input-SF2sfs-${D##*/} \
 ##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-##			SFinput-sfs.sh <OUTPUT LOCATION> ${D} 
+##			SF2input-SF2sfs.sh <OUTPUT LOCATION> ${D} 
 ##done
 
 ############################################################################
@@ -50,7 +50,7 @@ echo "##########################################################################
 echo "##SCRIPT CONTROL:"
 echo 
 
-SCRIPTNAME=$(echo "SFinput-sfs.sh") 
+SCRIPTNAME=$(echo "SF2input-SF2sfs.sh") 
 
 RUNDATE=$(date +"%Y%m%d%H%M%S")
 PATHTOSCRIPT=$(echo "${PATHTOMYSBATCHSCRIPTS}/${SCRIPTNAME}") 
@@ -142,8 +142,8 @@ echo
 
 ##Output file/directory (as an extension of the input file/directory).
 OUTPUTFILEPREFIX=$(echo ${INPUTDIRNAME} | sed 's/-job[0-9].*$//')
-OUTPUTFILE1NAME=$(echo "${OUTPUTFILEPREFIX}.sfs-job${JOBID}.concatSFinput") 
-OUTPUTFILE2NAME=$(echo "${OUTPUTFILEPREFIX}.sfs-job${JOBID}.SFsfs") 
+OUTPUTFILE1NAME=$(echo "${OUTPUTFILEPREFIX}.SF2sfs-job${JOBID}.concatSF2input") 
+OUTPUTFILE2NAME=$(echo "${OUTPUTFILEPREFIX}.SF2sfs-job${JOBID}.SF2sfs") 
 OUTPUTFILE1=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE1NAME}") 
 OUTPUTFILE2=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE2NAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
@@ -159,11 +159,11 @@ echo "##########################################################################
 echo "##PROCESSING DIRECTORY: ${INPUTDIR}"
 echo 
 
-##Concatenate all .SFinput files to create a .concatSFinput file.
-awk 'FNR==1 && NR!=1 { while (/^position\tx\tn\tfolded/) getline; } 1 {print}' $(echo "${INPUTDIR}/*.SFinput") > ${OUTPUTFILE1} 
+##Concatenate all .SF2input files to create a .concatSF2input file.
+awk 'FNR==1 && NR!=1 { while (/^position\tx\tn\tfolded/) getline; } 1 {print}' $(echo "${INPUTDIR}/*.SF2input") > ${OUTPUTFILE1} 
 sleep 5s
 
-##Create a .SFsfs file.
+##Create a .SF2sfs file.
 SweepFinder2 -f ${OUTPUTFILE1} ${OUTPUTFILE2} 
 sleep 5s
 
