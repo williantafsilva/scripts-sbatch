@@ -15,7 +15,7 @@
 ##Input $1: Output location.
 ##Input $2: VCF file (.vcf or .vcf.gz).
 ##Input $3: File containing a list of haploid chromosomes.
-##Output: Phased VCF file (.vcf.gz).
+##Output: Phased VCF file (.vcf.gz) and its index file (.tbi).
 
 ##Usage (bulk submission): 
 ##find <PATH TO DIRECTORY>/*.vcf.gz -maxdepth 0 | while read F ; do 
@@ -146,12 +146,16 @@ echo
 
 ##Output file (as an extension of the input file/directory).
 OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//')
-OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.phase-job${JOBID}.vcf.gz") 
-OUTPUTFILE=$(echo "${OUTPUTLOCATION}/${OUTPUTFILENAME}") 
+OUTPUTFILE1NAME=$(echo "${OUTPUTFILEPREFIX}.phase-job${JOBID}.vcf.gz") 
+OUTPUTFILE2NAME=$(echo "${OUTPUTFILEPREFIX}.phase-job${JOBID}.vcf.gz.tbi") 
+OUTPUTFILE1=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE1NAME}") 
+OUTPUTFILE2=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE2NAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
 OUTPUTFILEPREFIX: ${OUTPUTFILEPREFIX}
-OUTPUTFILENAME: ${OUTPUTFILENAME}
-OUTPUTFILE: ${OUTPUTFILE}
+OUTPUTFILE1NAME: ${OUTPUTFILE1NAME}
+OUTPUTFILE2NAME: ${OUTPUTFILE2NAME}
+OUTPUTFILE1: ${OUTPUTFILE1}
+OUTPUTFILE2: ${OUTPUTFILE2}
 "
 
 echo 
@@ -161,6 +165,7 @@ echo
 
 ##Create temporary output directory.
 TMPDIR=$(echo "${OUTPUTLOCATION}/tmp-vcf-phase-shapeit5-job${JOBID}")
+FILELIST=$(echo "${TMPDIR}/bcffilelist.txt") 
 mkdir -p ${TMPDIR}
 
 ##Phasing.
@@ -169,17 +174,16 @@ bcftools index -s ${INPUTFILE} | cut -f 1 | while read C ; do
 	OUTPUTFILEXNAME=$(echo "${C}.bcf") 
 	OUTPUTFILEX=$(echo "${TMPDIR}/${OUTPUTFILEXNAME}") 
 	phase_common --input ${INPUTFILE} --region ${C} --filter-snp --haploids ${HAPLOIDLIST} --output-format bcf --output ${OUTPUTFILEX} --thread 10
+	echo "${OUTPUTFILEX}" >> ${FILELIST}
 done
 sleep 5s
 
 ##Concatenate phased BCF files.
-IFS=${IFS_SPACE}
-bcftools concat -O z -o ${OUTPUTFILE} $(echo ${TMPDIR}/*.bcf)
+bcftools concat -O z --file-list ${FILELIST} --write-index=tbi -o ${OUTPUTFILE1}
 sleep 5s
-IFS=${ORIGINALIFS}
 
 ##Delete temporary output directory.
-rm -rf ${TMPDIR}
+##rm -rf ${TMPDIR}
 
 echo 
 echo "############################################################################"
@@ -191,7 +195,8 @@ Date: ${RUNDATE}
 Job ID: ${JOBID}
 Script: ${SUBMITTEDSCRIPT}
 Input file: ${INPUTFILE}
-Output file: ${OUTPUTFILE}
+Output file: ${OUTPUTFILE1}
+Output file: ${OUTPUTFILE2}
 " >> $(echo "${OUTPUTLOCATION}/README.txt") 
 
 echo 
