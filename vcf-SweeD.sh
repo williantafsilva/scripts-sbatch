@@ -133,7 +133,7 @@ echo
 INPUTFILE=$(readlink -f $2)
 INPUTFILELOCATION=${INPUTFILE%/*}
 INPUTFILENAME=${INPUTFILE##*/}
-INPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.SFinput.*$//' | sed 's/\.vcf.*$//' | sed 's/-job[0-9].*$//')
+INPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.SF2input.*$//' | sed 's/\.vcf.*$//' | sed 's/-job[0-9].*$//')
 echo "INPUTFILE: ${INPUTFILE}
 INPUTFILELOCATION: ${INPUTFILELOCATION}
 INPUTFILENAME: ${INPUTFILENAME}
