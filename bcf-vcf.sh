@@ -14,7 +14,7 @@
 
 ##Input $1: Output location.
 ##Input $2: BCF file (.bcf).
-##Output: Compressed VCF file (.vcf.gz).
+##Output: Compressed VCF file (.vcf.gz) and index file (.tbi).
 
 ##Usage (bulk submission): 
 ##find <PATH TO DIRECTORY>/*.bcf -maxdepth 0 | while read F ; do 
@@ -140,12 +140,16 @@ echo
 
 ##Output file/directory (as an extension of the input file/directory).
 OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//')
-OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.bcftovcf-job${JOBID}.vcf.gz") 
-OUTPUTFILE=$(echo "${OUTPUTLOCATION}/${OUTPUTFILENAME}") 
+OUTPUTFILE1NAME=$(echo "${OUTPUTFILEPREFIX}.bcftovcf-job${JOBID}.vcf.gz") 
+OUTPUTFILE2NAME=$(echo "${OUTPUTFILE1NAME}.tbi") 
+OUTPUTFILE1=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE1NAME}") 
+OUTPUTFILE2=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE2NAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
 OUTPUTFILEPREFIX: ${OUTPUTFILEPREFIX}
-OUTPUTFILENAME: ${OUTPUTFILENAME}
-OUTPUTFILE: ${OUTPUTFILE}
+OUTPUTFILE1NAME: ${OUTPUTFILE1NAME}
+OUTPUTFILE2NAME: ${OUTPUTFILE2NAME}
+OUTPUTFILE1: ${OUTPUTFILE1}
+OUTPUTFILE2: ${OUTPUTFILE2}
 "
 
 echo 
@@ -153,7 +157,7 @@ echo "##########################################################################
 echo "##PROCESSING FILE: ${INPUTFILE}"
 echo 
 
-bcftools convert -O z -o ${OUTPUTFILE} ${INPUTFILE}
+bcftools convert -O z --write-index=tbi -o ${OUTPUTFILE1} ${INPUTFILE}
 
 echo 
 echo "############################################################################"
@@ -165,7 +169,8 @@ Date: ${RUNDATE}
 Job ID: ${JOBID}
 Script: ${SUBMITTEDSCRIPT}
 Input file: ${INPUTFILE}
-Output file: ${OUTPUTFILE}
+Output file: ${OUTPUTFILE1}
+Output file: ${OUTPUTFILE2}
 " >> $(echo "${OUTPUTLOCATION}/README.txt") 
 
 echo 
