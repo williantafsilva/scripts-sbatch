@@ -147,7 +147,7 @@ echo
 ##Output file (as an extension of the input file/directory).
 OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//')
 OUTPUTFILE1NAME=$(echo "${OUTPUTFILEPREFIX}.phase-job${JOBID}.vcf.gz") 
-OUTPUTFILE2NAME=$(echo "${OUTPUTFILEPREFIX}.phase-job${JOBID}.vcf.gz.tbi") 
+OUTPUTFILE2NAME=$(echo "${OUTPUTFILE1NAME}.tbi")
 OUTPUTFILE1=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE1NAME}") 
 OUTPUTFILE2=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE2NAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
