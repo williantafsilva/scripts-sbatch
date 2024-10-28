@@ -43,7 +43,9 @@ sbatch \
 
 - Input 2: BCF file (\*.bcf).
 
-- Output : VCF file (\*.bcftovcf-job\*.vcf.gz).
+- Output 1: VCF file (\*.bcftovcf-job\*.vcf.gz).
+
+- Output 2: Index file (\*.bcftovcf-job\*.vcf.gz.tbi).
 
 - Usage:
 
@@ -244,8 +246,225 @@ sbatch \
 	vcf-addAC.sh <OUTPUT LOCATION> <VCF FILE> 
 ```
 
+## vcf-biallelic.sh
 
+- Filter out non-biallelic sites.
 
+- Input 1: Output location.
 
+- Input 2: VCF file (\*.vcf or \*.vcf.gz).
 
+- Output 1: VCF file (\*.addAC-job\*.vcf.gz).
 
+- Output 2: VCF file (\*.addAC-job\*.vcf.gz.tbi).
+
+- Usage:
+
+```
+vcf-biallelic.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-biallelic \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-biallelic.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+## vcf-compress.sh
+
+- Compress VCF file.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf).
+
+- Output: Compressed VCF file (\*.gz-job\*.vcf.gz).
+
+- Usage:
+
+```
+vcf-compress.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-compress \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-compress.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+## vcf-consensusseq.sh
+
+- Create global consensus (IUPAC code) and individual consensus (alternative alleles in heterozygotes) sequences from a VCF file and the corresponding reference FASTA file.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz).
+
+- Input 3: Indexed reference genome FASTA file (\*.fa).
+
+- Input 4: Target sequence range (chr:position-position).
+
+- Input 5: Comma-separated string of sample names.
+
+- Output 1: Global consensus FASTA file (\*.consensus-global-job\*.fa).
+
+- Output 2: Individual sample consensus FASTA files (\*.consensus-\*-job\*.fa).
+
+- Usage:
+
+```
+vcf-consensusseq.sh <OUTPUT LOCATION> <VCF FILE> <REFERENCE FASTA FILE> <SEQUENCE RANGE> <SAMPLES>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-consensusseq \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-consensusseq.sh <OUTPUT LOCATION> <VCF FILE> <REFERENCE FASTA FILE> <SEQUENCE RANGE> <SAMPLES>
+```
+
+## vcf-index-stats.sh
+
+- Index a sorted VCF file.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz).
+
+- Output 1: Index file (\*.tbi).
+
+- Output 2: Stats file (\*.stats-job\*.txt).
+
+- Usage:
+
+```
+vcf-index-stats.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-index-stats \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-index-stats.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+## vcf-OmegaPlus.sh
+
+- Generate OmegaPlus output files.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz) split per chromosome/contig.
+
+- Output 1: OmegaPlus_Report file (OmegaPlus_Report\*.OP-job\*.OmegaPlusoutput).
+
+- Output 2: OmegaPlus_Info file (OmegaPlus_Info\*.OP-job\*.OmegaPlusoutput).
+
+- Usage:
+
+```
+vcf-OmegaPlus.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-OmegaPlus \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-OmegaPlus.sh <OUTPUT LOCATION> <VCF FILE> 
+```
+
+## vcf-phase-shapeit5.sh
+
+- Phase VCF file using SHAPEIT5.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz).
+
+- Input 3: File containing a list of haploid chromosomes.
+
+- Output 1: Phased VCF file (\*.phase-job\*.vcf.gz).
+
+- Output 2: Index file (\*.phase-job\*.vcf.gz.tbi).
+
+- Usage:
+
+```
+vcf-phase-shapeit5.sh <OUTPUT LOCATION> <VCF FILE> <HAPLOID CHR LIST FILE> 
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-phase-shapeit5 \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-phase-shapeit5.sh <OUTPUT LOCATION> <VCF FILE> <HAPLOID CHR LIST FILE> 
+```
+
+## vcf-renamesamples.sh
+
+- Change sample names in a VCF file.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz).
+
+- Input 3: Sample name conversion file (OLDNAME NEWNAME\n).
+
+- Output 1: VCF file (\*.renamesamples-job\*.vcf.gz).
+
+- Usage:
+
+```
+vcf-renamesamples.sh <OUTPUT LOCATION> <VCF FILE> <SAMPLE NAME CONVERTION FILE>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-renamesamples \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-renamesamples.sh <OUTPUT LOCATION> <VCF FILE> <SAMPLE NAME CONVERTION FILE>
+```
