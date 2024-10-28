@@ -448,7 +448,7 @@ sbatch \
 
 - Input 3: Sample name conversion file (OLDNAME NEWNAME\n).
 
-- Output 1: VCF file (\*.renamesamples-job\*.vcf.gz).
+- Output: VCF file (\*.renamesamples-job\*.vcf.gz).
 
 - Usage:
 
@@ -467,4 +467,186 @@ sbatch \
 	-J vcf-renamesamples \
 	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
 	vcf-renamesamples.sh <OUTPUT LOCATION> <VCF FILE> <SAMPLE NAME CONVERTION FILE>
+```
+
+## vcf-selectsamples.sh
+
+- Select samples from a VCF file.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz).
+
+- Input 3: Comma-separated string with target samples (use | paste -sd,).
+
+- Input 4: Sample group code to be attached to the output file name.
+
+- Output: VCF file (\*.select\*-job\*.vcf.gz).
+
+- Usage:
+
+```
+vcf-selectsamples.sh <OUTPUT LOCATION> <VCF FILE> <LIST OF SAMPLES> <SAMPLE GROUP CODE> 
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-selectsamples \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-selectsamples.sh <OUTPUT LOCATION> <VCF FILE> <LIST OF SAMPLES> <SAMPLE GROUP CODE> 
+```
+
+## vcf-SF2input.sh
+
+- Generate SweepFinder2 input files.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz) split per chromosome/contig.
+
+- Output: SweepFinder2 input file (\*.SF2format-job\*.SF2input).
+
+- Usage:
+
+```
+vcf-SF2input.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-SF2input \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-SF2input.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+## vcf-sort-index.sh
+
+- Sort and index VCF file
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz).
+
+- Output 1: VCF file (\*.sort-job\*.vcf.gz).
+
+- Output 2: Index file (\*.sort-job\*.vcf.gz.tbi).
+
+- Usage:
+
+```
+vcf-sort-index.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-sort-index \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-sort-index.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+## vcf-split.sh
+
+- Split VCF file by chromosome/contig.
+
+- Input 1: Output location.
+
+- Input 2: Indexed VCF file (\*.vcf or \*.vcf.gz).
+
+- Output: Directory (\*.splitbychr-job\*) with VCF files (\*.splitbychr-job\*.vcf.gz) by chromosome/contig.
+
+- Usage:
+
+```
+vcf-split.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-split \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-split.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+## vcf-summarytable.sh
+
+- Create a summary table of a VCF file.
+
+- Input 1: Output location.
+
+- Input 2: Indexed VCF file (\*.vcf or \*.vcf.gz).
+
+- Output: Summary table file (\*.summary-job\*.txt).
+
+- Usage:
+
+```
+vcf-summarytable.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-summarytable \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-summarytable.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+## vcf-SweeD.sh
+
+- Generate SweeD output files.
+
+- Input 1: Output location.
+
+- Input 2: VCF file (\*.vcf or \*.vcf.gz) or SweepFinder2 input file (\*.SF2input), split by chromosome.
+
+- Output 1: SweeD_Report file (SweeD_Report\*.SweeD-job\*.SweeDoutput).
+
+- Output 2: SweeD_Info file (SweeD_Info\*.SweeD-job\*.SweeDoutput).
+
+- Usage:
+
+```
+vcf-SweeD.sh <OUTPUT LOCATION> <VCF FILE>
+```
+
+```
+sbatch \
+	-A ${PROJECT_ID} \
+	-o ${MYSLURMFILE} \
+	-p shared \
+	-N 1 \
+	-n 5 \ ##--mem=100GB \
+	-t 0-12:00:00 \
+	-J vcf-SweeD \
+	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
+	vcf-SweeD.sh <OUTPUT LOCATION> <VCF FILE>
 ```
