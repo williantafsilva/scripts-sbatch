@@ -148,8 +148,8 @@ echo
 
 ##Output file. ##?????
 OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//') 
-OUTPUTFILENAME=$(echo ${OUTPUTFILEPREFIX}.sbatchscripttemplate-job${JOBID}.txt) 
-OUTPUTFILE=$(echo ${OUTPUTLOCATION}/${OUTPUTFILENAME}) 
+OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.sbatchscripttemplate-job${JOBID}.txt") 
+OUTPUTFILE=$(echo "${OUTPUTLOCATION}/${OUTPUTFILENAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
 OUTPUTFILEPREFIX: ${OUTPUTFILEPREFIX}
 OUTPUTFILENAME: ${OUTPUTFILENAME}
@@ -158,8 +158,8 @@ OUTPUTFILE: ${OUTPUTFILE}
 
 ##Output directory. ##?????
 OUTPUTDIRPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//') 
-OUTPUTDIRNAME=$(echo ${OUTPUTDIRPREFIX}.sbatchscripttemplate-job${JOBID}) 
-OUTPUTDIR=$(echo ${OUTPUTLOCATION}/${OUTPUTDIRNAME}) 
+OUTPUTDIRNAME=$(echo "${OUTPUTDIRPREFIX}.sbatchscripttemplate-job${JOBID}") 
+OUTPUTDIR=$(echo "${OUTPUTLOCATION}/${OUTPUTDIRNAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
 OUTPUTDIRPREFIX: ${OUTPUTDIRPREFIX}
 OUTPUTDIRNAME: ${OUTPUTDIRNAME}
