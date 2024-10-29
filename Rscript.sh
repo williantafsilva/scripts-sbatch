@@ -62,7 +62,7 @@ SLURM_JOB_TIMELIMIT=$(squeue -j $SLURM_JOB_ID -h --Format TimeLimit)
 
 RSCRIPTNAME=$1
 OUTPUTLOCATION=$(readlink -f $2)
-ARGS=${@:3}
+ARGS=${@:2}
 
 RSCRIPT=$(echo "${PATHTOMYRSCRIPTS}/${RSCRIPTNAME}") 
 SUBMITTEDRSCRIPT=$(echo "${PATHTOMYSUBMITTEDSCRIPTS}/job${JOBID}-date${RUNDATE}-${RSCRIPTNAME}") 
@@ -135,7 +135,6 @@ echo
 
 echo "RSCRIPTNAME: ${RSCRIPTNAME}
 RSCRIPT: ${RSCRIPT}
-OUTPUTLOCATION: ${OUTPUTLOCATION}
 ARGS: ${ARGS}
 "
 
@@ -148,7 +147,9 @@ echo
 cd $(readlink -f .)
 
 ##Run R script
-Rscript --vanilla ${RSCRIPT} ${JOBID} ${OUTPUTLOCATION} ${ARGS}
+IFS=$' '
+Rscript --vanilla ${RSCRIPT} ${JOBID} ${ARGS}
+IFS=${ORIGINALIFS}
 
 echo 
 echo "R SCRIPT ${RSCRIPT} PROCESSED."
