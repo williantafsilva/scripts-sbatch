@@ -6,6 +6,8 @@ Scripts submitted to SLURM (via sbatch) produce the following files (in addition
 
 - Slurm file (job\*.slurm).
 
+![testimage](https://pngimg.com/uploads/dot/dot_PNG4.png)
+
 ## bcf-index-stats.sh
 
 - Index BCF file.
