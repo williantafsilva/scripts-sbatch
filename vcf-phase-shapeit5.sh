@@ -183,7 +183,7 @@ bcftools concat -O z --file-list ${FILELIST} --write-index=tbi -o ${OUTPUTFILE1}
 sleep 5s
 
 ##Delete temporary output directory.
-##rm -rf ${TMPDIR}
+rm -rf ${TMPDIR}
 
 echo 
 echo "############################################################################"
