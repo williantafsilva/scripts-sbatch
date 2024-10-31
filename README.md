@@ -326,7 +326,7 @@ sbatch \
 
 - Output 1: Global consensus FASTA file (\*.consensus\*-global-job\*.fa).
 
-- Output 2: Individual sample consensus FASTA files (\*.consensus\*-\*-job\*.fa).
+- Output 2: Individual sample consensus (alternative allele) FASTA file (\*.consensus\*-individual-job\*.fa).
 
 - Usage:
 
