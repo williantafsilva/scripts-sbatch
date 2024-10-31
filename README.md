@@ -105,12 +105,14 @@ sbatch \
 
 - Input 3: Sequence range (chr:position-position).
 
-- Output : FASTA file (\*.query-job\*.fa).
+- Input 4: File tag (to be included in the output file name).
+
+- Output : FASTA file (\*.query*-job\*.fa).
 
 - Usage:
 
 ```
-refseq-query.sh <OUTPUT LOCATION> <FASTA FILE> <SEQUENCE RANGE>
+refseq-query.sh <OUTPUT LOCATION> <FASTA FILE> <SEQUENCE RANGE> <FILE TAG>
 ```
 
 ```
@@ -123,7 +125,7 @@ sbatch \
 	-t 0-12:00:00 \
 	-J refseq-query \
 	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-	refseq-query.sh <OUTPUT LOCATION> <FASTA FILE> <SEQUENCE RANGE>
+	refseq-query.sh <OUTPUT LOCATION> <FASTA FILE> <SEQUENCE RANGE> <FILE TAG>
 ```
 
 ## Rscript.sh
