@@ -17,6 +17,7 @@
 ##Input $3: Indexed reference genome FASTA file (.fa).
 ##Input $4: Target sequence range (chr:position-position).
 ##Input $5: Comma-separated string of sample names.
+##Input $6: File tag (to be included in the output file name).
 ##Output: FASTA files (.fa).
 
 ##Usage (bulk submission): 
@@ -30,7 +31,7 @@
 ##			-t 0-12:00:00 \
 ##			-J vcf-consensusseq-${F##*/} \
 ##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-##			vcf-consensusseq.sh <OUTPUT LOCATION> ${F} <REFERENCE FASTA FILE> <SEQUENCE RANGE> <SAMPLES>
+##			vcf-consensusseq.sh <OUTPUT LOCATION> ${F} <REFERENCE FASTA FILE> <SEQUENCE RANGE> <SAMPLES> <FILE TAG>
 ##done
 
 ############################################################################
@@ -135,12 +136,14 @@ INPUTFILENAME=${INPUTFILE##*/}
 REFFILE=$(readlink -f $3) ##Reference genome FASTA file.
 SEQRANGE=$4 #Sequence range.
 SAMPLELIST=$5 #List of sample names.
+FILETAG=$6 #File tag.
 echo "INPUTFILE: ${INPUTFILE}
 INPUTFILELOCATION: ${INPUTFILELOCATION}
 INPUTFILENAME: ${INPUTFILENAME}
 REFFILE:${REFFILE}
 SEQRANGE: ${SEQRANGE}
 SAMPLELIST: ${SAMPLELIST}
+FILETAG: ${FILETAG}
 "
 
 echo 
@@ -149,7 +152,7 @@ echo
 
 ##Output files (as an extension of the input file/directory).
 OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//')
-OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.consensus-global-job${JOBID}.fa") 
+OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.consensus${FILETAG}-global-job${JOBID}.fa") 
 OUTPUTFILE=$(echo "${OUTPUTLOCATION}/${OUTPUTFILENAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
 OUTPUTFILEPREFIX: ${OUTPUTFILEPREFIX}
@@ -170,7 +173,7 @@ samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --iupac-codes --sampl
 #Individual consensus.
 IFS=$','
 for IND in ${SAMPLELIST} ; do
-	OUTPUTFILEX=$(echo "${OUTPUTFILEPREFIX}.consensus-${IND}-job${JOBID}.fa") 
+	OUTPUTFILEX=$(echo "${OUTPUTFILEPREFIX}.consensus${FILETAG}-${IND}-job${JOBID}.fa") 
 	samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --haplotype A --samples ${IND} ${INPUTFILE} -p "Consensus_altallele_${IND} | " --output ${OUTPUTFILEX}
 	OUTPUTFILEXLIST=$(echo "${OUTPUTFILEXLIST}
 Output file: ${OUTPUTFILEX}")
@@ -190,6 +193,7 @@ Input file: ${INPUTFILE}
 Input reference file: ${REFFILE}
 Input target sequence: ${SEQRANGE}
 Input sample list: ${SAMPLELIST}
+Input file tag: ${FILETAG}
 Output file: ${OUTPUTFILE}${OUTPUTFILEXLIST}
 " >> $(echo "${OUTPUTLOCATION}/README.txt") 
 
