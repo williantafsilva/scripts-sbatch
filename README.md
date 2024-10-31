@@ -107,7 +107,7 @@ sbatch \
 
 - Input 4: File tag (to be included in the output file name).
 
-- Output : FASTA file (\*.query*-job\*.fa).
+- Output : FASTA file (\*.query\*-job\*.fa).
 
 - Usage:
 
@@ -322,14 +322,16 @@ sbatch \
 
 - Input 5: Comma-separated string of sample names.
 
-- Output 1: Global consensus FASTA file (\*.consensus-global-job\*.fa).
+- Input 6: File tag (to be included in the output file name).
 
-- Output 2: Individual sample consensus FASTA files (\*.consensus-\*-job\*.fa).
+- Output 1: Global consensus FASTA file (\*.consensus\*-global-job\*.fa).
+
+- Output 2: Individual sample consensus FASTA files (\*.consensus\*-\*-job\*.fa).
 
 - Usage:
 
 ```
-vcf-consensusseq.sh <OUTPUT LOCATION> <VCF FILE> <REFERENCE FASTA FILE> <SEQUENCE RANGE> <SAMPLES>
+vcf-consensusseq.sh <OUTPUT LOCATION> <VCF FILE> <REFERENCE FASTA FILE> <SEQUENCE RANGE> <SAMPLES> <FILE TAG>
 ```
 
 ```
@@ -342,7 +344,7 @@ sbatch \
 	-t 0-12:00:00 \
 	-J vcf-consensusseq \
 	--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-	vcf-consensusseq.sh <OUTPUT LOCATION> <VCF FILE> <REFERENCE FASTA FILE> <SEQUENCE RANGE> <SAMPLES>
+	vcf-consensusseq.sh <OUTPUT LOCATION> <VCF FILE> <REFERENCE FASTA FILE> <SEQUENCE RANGE> <SAMPLES> <FILE TAG>
 ```
 
 ## vcf-index-stats.sh
