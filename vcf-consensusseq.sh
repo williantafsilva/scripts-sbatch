@@ -18,7 +18,7 @@
 ##Input $4: Target sequence range (chr:position-position).
 ##Input $5: Comma-separated string of sample names.
 ##Input $6: File tag (to be included in the output file name).
-##Output: FASTA files (.fa).
+##Output: Global and individual sample consensus FASTA files (.fa).
 
 ##Usage (bulk submission): 
 ##find <PATH TO DIRECTORY>/*.vcf.gz -maxdepth 0 | while read F ; do 
@@ -177,10 +177,7 @@ samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --iupac-codes --sampl
 #Individual consensus.
 IFS=$','
 for IND in ${SAMPLELIST} ; do
-	##OUTPUTFILEX=$(echo "${OUTPUTFILEPREFIX}.consensus${FILETAG}-${IND}-job${JOBID}.fa") 
-	samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --haplotype A --samples ${IND} ${INPUTFILE} -p "Consensus_altallele_${IND} | " >> ${OUTPUTFILE2} ##--output ${OUTPUTFILEX}
-	##OUTPUTFILEXLIST=$(echo "${OUTPUTFILEXLIST}
-##Output file: ${OUTPUTFILEX}")
+	samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --haplotype A --samples ${IND} ${INPUTFILE} -p "Consensus_altallele_${IND} | " >> ${OUTPUTFILE2} 
 done
 IFS=$'\n'
 
