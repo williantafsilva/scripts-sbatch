@@ -15,6 +15,7 @@
 ##Input $1: Output location.
 ##Input $2: Indexed reference FASTA file (.fa).
 ##Input $3: Sequence range (chr:position-position).
+##Input $4: File tag (to be included in the output file name).
 ##Output: FASTA file (.fa).
 
 ##Usage (bulk submission): 
@@ -28,7 +29,7 @@
 ##  		-t 0-05:00:00 \
 ##			-J refseq-query-${F##*/} \
 ##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-##			refseq-query.sh <OUTPUT LOCATION> ${F} <SEQUENCE RANGE>
+##			refseq-query.sh <OUTPUT LOCATION> ${F} <SEQUENCE RANGE> <FILE TAG>
 ##done
 
 ############################################################################
@@ -134,10 +135,12 @@ INPUTFILE=$(readlink -f $2)
 INPUTFILELOCATION=${INPUTFILE%/*}
 INPUTFILENAME=${INPUTFILE##*/}
 SEQRANGE=$3 #Sequence range.
+FILETAG=$4 #File tag.
 echo "INPUTFILE: ${INPUTFILE}
 INPUTFILELOCATION: ${INPUTFILELOCATION}
 INPUTFILENAME: ${INPUTFILENAME}
 SEQRANGE: ${SEQRANGE}
+FILETAG: ${FILETAG}
 "
 
 echo 
@@ -146,7 +149,7 @@ echo
 
 ##Output file (as an extension of the input file/directory).
 OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.fa.*$//' | sed 's/\.fasta.*$//' | sed 's/-job[0-9].*$//')
-OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.query-job${JOBID}.fa") 
+OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.query${FILETAG}-job${JOBID}.fa") 
 OUTPUTFILE=$(echo "${OUTPUTLOCATION}/${OUTPUTFILENAME}") 
 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
@@ -173,6 +176,7 @@ Job ID: ${JOBID}
 Script: ${SUBMITTEDSCRIPT}
 Input file: ${INPUTFILE}
 Sequence range: ${SEQRANGE}
+File tag: ${FILETAG}
 Output file: ${OUTPUTFILE}
 " >> $(echo "${OUTPUTLOCATION}/README.txt") 
 
