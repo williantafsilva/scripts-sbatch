@@ -152,12 +152,16 @@ echo
 
 ##Output files (as an extension of the input file/directory).
 OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//')
-OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.consensus${FILETAG}-global-job${JOBID}.fa") 
-OUTPUTFILE=$(echo "${OUTPUTLOCATION}/${OUTPUTFILENAME}") 
+OUTPUTFILE1NAME=$(echo "${OUTPUTFILEPREFIX}.consensus${FILETAG}-global-job${JOBID}.fa") 
+OUTPUTFILE2NAME=$(echo "${OUTPUTFILEPREFIX}.consensus${FILETAG}-individual-job${JOBID}.fa") 
+OUTPUTFILE1=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE1NAME}") 
+OUTPUTFILE2=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE2NAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
 OUTPUTFILEPREFIX: ${OUTPUTFILEPREFIX}
-OUTPUTFILENAME: ${OUTPUTFILENAME}
-OUTPUTFILE: ${OUTPUTFILE}
+OUTPUTFILE1NAME: ${OUTPUTFILE1NAME}
+OUTPUTFILE2NAME: ${OUTPUTFILE2NAME}
+OUTPUTFILE1: ${OUTPUTFILE1}
+OUTPUTFILE2: ${OUTPUTFILE2}
 "
 
 echo 
@@ -168,15 +172,15 @@ echo
 cd ${OUTPUTLOCATION}
 
 #Global consensus.
-samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --iupac-codes --samples ${SAMPLELIST} ${INPUTFILE} -p 'Consensus_global_IUPAC_code | ' --output ${OUTPUTFILE}
+samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --iupac-codes --samples ${SAMPLELIST} ${INPUTFILE} -p 'Consensus_global_IUPAC_code | ' --output ${OUTPUTFILE1}
 
 #Individual consensus.
 IFS=$','
 for IND in ${SAMPLELIST} ; do
-	OUTPUTFILEX=$(echo "${OUTPUTFILEPREFIX}.consensus${FILETAG}-${IND}-job${JOBID}.fa") 
-	samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --haplotype A --samples ${IND} ${INPUTFILE} -p "Consensus_altallele_${IND} | " --output ${OUTPUTFILEX}
-	OUTPUTFILEXLIST=$(echo "${OUTPUTFILEXLIST}
-Output file: ${OUTPUTFILEX}")
+	##OUTPUTFILEX=$(echo "${OUTPUTFILEPREFIX}.consensus${FILETAG}-${IND}-job${JOBID}.fa") 
+	samtools faidx ${REFFILE} ${SEQRANGE} | bcftools consensus --haplotype A --samples ${IND} ${INPUTFILE} -p "Consensus_altallele_${IND} | " >> ${OUTPUTFILE2} ##--output ${OUTPUTFILEX}
+	##OUTPUTFILEXLIST=$(echo "${OUTPUTFILEXLIST}
+##Output file: ${OUTPUTFILEX}")
 done
 IFS=$'\n'
 
@@ -194,7 +198,8 @@ Input reference file: ${REFFILE}
 Input target sequence: ${SEQRANGE}
 Input sample list: ${SAMPLELIST}
 Input file tag: ${FILETAG}
-Output file: ${OUTPUTFILE}${OUTPUTFILEXLIST}
+Output file: ${OUTPUTFILE1}
+Output file: ${OUTPUTFILE2}
 " >> $(echo "${OUTPUTLOCATION}/README.txt") 
 
 echo 
