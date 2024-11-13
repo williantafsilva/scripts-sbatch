@@ -10,7 +10,7 @@
 ##SCRIPT DESCRIPTION:
 
 ##Description:
-##Run R script (.R).
+##Run R script (.R) from directory scripts-tmp.
 
 ##Input $1: R script (.R).
 ##Input $2: Output location.
