@@ -51,7 +51,7 @@ echo "##########################################################################
 echo "##SCRIPT CONTROL:"
 echo 
 
-SCRIPTNAME=$(echo "Rscript.sh") 
+SCRIPTNAME=$(echo "Rscript-tmp.sh") 
 
 RUNDATE=$(date +"%Y%m%d%H%M%S")
 PATHTOSCRIPT=$(echo "${PATHTOMYSBATCHSCRIPTS}/${SCRIPTNAME}") 
