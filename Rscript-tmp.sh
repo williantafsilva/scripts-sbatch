@@ -26,9 +26,9 @@
 ##			-N 1 \
 ##			-n 5 \ ##--mem=100GB \
 ##  		-t 0-05:00:00 \
-##			-J Rscript-${F##*/} \
+##			-J Rscript-tmp-${F##*/} \
 ##			--dependency=afterok:<JOB1 ID>:<JOB2 ID> \
-##			Rscript.sh <R SCRIPT FILE NAME> <OUTPUT LOCATION> ${F}
+##			Rscript-tmp.sh <R SCRIPT FILE NAME> <OUTPUT LOCATION> ${F}
 ##done
 
 ############################################################################
