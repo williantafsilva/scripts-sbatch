@@ -159,7 +159,7 @@ echo
 mkdir -p ${OUTPUTDIR} 
 
 find ${INPUTDIR}/* -maxdepth 0 | grep -e ".fastq.gz" -e ".fq.gz" | while read F ; do
-	fastqc -o ${OUTPUTLOCATION} ${F}
+	fastqc -o ${OUTPUTDIR} ${F}
 done
 multiqc -o ${OUTPUTDIR} ${OUTPUTDIR}
 
