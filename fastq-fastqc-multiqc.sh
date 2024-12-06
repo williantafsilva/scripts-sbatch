@@ -116,7 +116,8 @@ if [[ $(hostname -f) == *uppmax* ]] ; then
 elif [[ $(hostname -f) == *pdc* ]] ; then
 	module load systemdefault/1.0.0
 	module load bioinfo-tools
-	module load fastqc/0.12.1
+	module load FastQC/0.11.9
+	
 fi
 
 echo 
@@ -143,8 +144,7 @@ echo
 
 ##Output file (as an extension of the input file/directory).
 OUTPUTFILEPREFIX=$(echo ${INPUTFILENAME} | sed 's/\.vcf.*$//' | sed 's/\.bcf.*$//' | sed 's/-job[0-9].*$//')
-OUTPUTFILE1NAME=$(echo "${OUTPUTFILEPREFIX}.biallelic-job${JOBID}.vcf.gz") 
-OUTPUTFILE2NAME=$(echo "${OUTPUTFILE1NAME}.tbi")
+OUTPUTFILENAME=$(echo "${OUTPUTFILEPREFIX}.biallelic-job${JOBID}.vcf.gz") 
 OUTPUTFILE1=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE1NAME}") 
 OUTPUTFILE2=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE2NAME}") 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
