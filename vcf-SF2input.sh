@@ -158,6 +158,7 @@ vcftools --gzvcf ${INPUTFILE} --counts2 --out $(echo "${OUTPUTLOCATION}/${OUTPUT
 sleep 5s
 tail -n+2 $(echo "${OUTPUTLOCATION}/${OUTPUTFILEPREFIX}-job${JOBID}.frq.count") | awk -v OFS="\t" '{print $2,$6,$4,"1"}' | sed '1 i\position\tx\tn\tfolded' > ${OUTPUTFILE} ##Format output files to SweepFinder2 standard.
 sleep 5s
+awk -F'\t' '$2!=$3' ${OUTPUTFILE} > ${OUTPUTFILE} ##Remove monomorphic sites.
 rm -f $(echo "${OUTPUTLOCATION}/${OUTPUTFILEPREFIX}-job${JOBID}.frq.count") ##Remove .frq.count files.
 rm -f $(echo "${OUTPUTLOCATION}/${OUTPUTFILEPREFIX}-job${JOBID}.log") ##Remove .log files.
 
