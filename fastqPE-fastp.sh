@@ -208,7 +208,7 @@ fastp \
 	-h ${OUTPUTFILE7} \
 	--detect_adapter_for_pe \
 	--qualified_quality_phred 20 \
-	--thread 7
+	--thread 10
 
 echo 
 echo "############################################################################"
