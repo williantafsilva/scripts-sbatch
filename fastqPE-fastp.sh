@@ -190,9 +190,9 @@ echo "##PROCESSING FILE: ${INPUTFILE}"
 echo 
 
 fastp \
-	--in1 ${INPUTFILE1} \ 
+	--in1 ${INPUTFILE1} \
 	--in2 ${INPUTFILE2} \
-	--out1 ${OUTPUTFILE1} \ 
+	--out1 ${OUTPUTFILE1} \
 	--out2 ${OUTPUTFILE2} \
 	--unpaired1 ${OUTPUTFILE3} \
 	--unpaired2 ${OUTPUTFILE4} \
