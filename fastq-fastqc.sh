@@ -152,7 +152,7 @@ OUTPUTDIR: ${OUTPUTDIR}
 
 echo 
 echo "############################################################################"
-echo "##PROCESSING FILE: ${INPUTDIR}"
+echo "##PROCESSING DIRECTORY: ${INPUTDIR}"
 echo 
 
 ##Create output directory.
@@ -185,7 +185,7 @@ Output directory: ${OUTPUTDIR}
 " >> $(echo "${OUTPUTDIR}/README.txt") 
 
 echo 
-echo "FILE ${INPUTFILE} PROCESSED."
+echo "DIRECTORY ${INPUTDIR} PROCESSED."
 echo 
 echo "############################################################################"
 echo "END OF BASH SCRIPT... $(date)"
