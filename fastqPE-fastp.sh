@@ -15,7 +15,7 @@
 ##Input $1: Output location.
 ##Input $2: FASTQ file (read 1, R1) (.fastq.gz or .fq.gz).
 ##Input $3: FASTQ file (read 2, R2) (.fastq.gz or .fq.gz).
-##Output: FASTQ files (.fastq.gz).
+##Output: FASTQ files (.fastq.gz) and report files (.json and .html).
 
 ##Usage (bulk submission): 
 ##find <PATH TO DIRECTORY>/<DIRECTORY> -maxdepth 0 | while read D ; do 
@@ -147,27 +147,46 @@ echo
 echo "##OUTPUT:"
 echo 
 
+##Create consensus file name.
+CONSENSUSFILENAME=""
+while read C ; do
+    C1=$(echo ${C} | cut -f1)
+    C2=$(echo ${C} | cut -f2)
+    if [[ "${C1}" == "${C2}" ]] ; then
+        CONSENSUSFILENAME+="${C1}"
+    else
+        CONSENSUSFILENAME+="X"
+    fi
+done <<< "$(paste -d'\t' <(echo ${INPUTFILE1NAME} | grep -o .) <(echo ${INPUTFILE2NAME} | grep -o .))"
+
 ##Output file (as an extension of the input file/directory).
 OUTPUTFILE1PREFIX=$(echo ${INPUTFILE1NAME} | sed 's/\.fastq\..*$//' | sed 's/\.fq\..*$//' | sed 's/-job[0-9].*$//')
 OUTPUTFILE2PREFIX=$(echo ${INPUTFILE2NAME} | sed 's/\.fastq\..*$//' | sed 's/\.fq\..*$//' | sed 's/-job[0-9].*$//')
+OUTPUTFILEXPREFIX=$(echo ${CONSENSUSFILENAME} | sed 's/\.fastq\..*$//' | sed 's/\.fq\..*$//' | sed 's/-job[0-9].*$//')
 OUTPUTFILE1NAME=$(echo "${OUTPUTFILE1PREFIX}.fastp-job${JOBID}.fastq.gz") 
 OUTPUTFILE2NAME=$(echo "${OUTPUTFILE2PREFIX}.fastp-job${JOBID}.fastq.gz") 
-OUTPUTFILE3NAME=$(echo "${OUTPUTFILE1PREFIX}.fastp_failQC_unpaired-job${JOBID}.fastq.gz") 
-OUTPUTFILE4NAME=$(echo "${OUTPUTFILE2PREFIX}.fastp_failQC_unpaired-job${JOBID}.fastq.gz") 
-OUTPUTFILE5NAME=$(echo "${OUTPUTFILE1PREFIX}.fastp_failQCfilters-job${JOBID}.fastq.gz") 
-OUTPUTFILE6NAME=$(echo "${OUTPUTFILE1PREFIX}.fastp-job${JOBID}.json") 
-OUTPUTFILE7NAME=$(echo "${OUTPUTFILE1PREFIX}.fastp-job${JOBID}.html") 
+OUTPUTFILE3NAME=$(echo "${OUTPUTFILEXPREFIX}.fastp_report-job${JOBID}.json") 
+OUTPUTFILE4NAME=$(echo "${OUTPUTFILEXPREFIX}.fastp_report-job${JOBID}.html") 
+OUTPUTFILE5NAME=$(echo "${OUTPUTFILE1PREFIX}.fastp_failQC_unpaired1-job${JOBID}.fastq.gz") 
+OUTPUTFILE6NAME=$(echo "${OUTPUTFILE2PREFIX}.fastp_failQC_unpaired2-job${JOBID}.fastq.gz") 
+OUTPUTFILE7NAME=$(echo "${OUTPUTFILEXPREFIX}.fastp_failQC_filters-job${JOBID}.fastq.gz") 
 OUTPUTFILE1=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE1NAME}") 
 OUTPUTFILE2=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE2NAME}") 
 OUTPUTFILE3=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE3NAME}") 
 OUTPUTFILE4=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE4NAME}") 
-OUTPUTFILE5=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE5NAME}") 
-OUTPUTFILE6=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE6NAME}") 
-OUTPUTFILE7=$(echo "${OUTPUTLOCATION}/${OUTPUTFILE7NAME}") 
+
+##Create output directory for reads that fail quality control.
+FAILQCDIR=$(echo "${OUTPUTLOCATION}/${OUTPUTFILEXPREFIX}.fastp_failQCreads-job${JOBID}") 
+mkdir -p ${FAILQCDIR}
+
+OUTPUTFILE5=$(echo "${FAILQCDIR}/${OUTPUTFILE5NAME}") 
+OUTPUTFILE6=$(echo "${FAILQCDIR}/${OUTPUTFILE6NAME}") 
+OUTPUTFILE7=$(echo "${FAILQCDIR}/${OUTPUTFILE7NAME}") 
 
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
 OUTPUTFILE1PREFIX: ${OUTPUTFILE1PREFIX}
 OUTPUTFILE2PREFIX: ${OUTPUTFILE2PREFIX}
+OUTPUTFILEXPREFIX: ${OUTPUTFILEXPREFIX}
 OUTPUTFILE1NAME: ${OUTPUTFILE1NAME}
 OUTPUTFILE2NAME: ${OUTPUTFILE2NAME}
 OUTPUTFILE3NAME: ${OUTPUTFILE3NAME}
@@ -175,6 +194,7 @@ OUTPUTFILE4NAME: ${OUTPUTFILE4NAME}
 OUTPUTFILE5NAME: ${OUTPUTFILE5NAME}
 OUTPUTFILE6NAME: ${OUTPUTFILE6NAME}
 OUTPUTFILE7NAME: ${OUTPUTFILE7NAME}
+FAILQCDIR: ${FAILQCDIR}
 OUTPUTFILE1: ${OUTPUTFILE1}
 OUTPUTFILE2: ${OUTPUTFILE2}
 OUTPUTFILE3: ${OUTPUTFILE3}
@@ -194,18 +214,19 @@ fastp \
 	--in2 ${INPUTFILE2} \
 	--out1 ${OUTPUTFILE1} \
 	--out2 ${OUTPUTFILE2} \
-	--unpaired1 ${OUTPUTFILE3} \
-	--unpaired2 ${OUTPUTFILE4} \
-	--failed_out ${OUTPUTFILE5} \
+	--json ${OUTPUTFILE3} \
+	--html ${OUTPUTFILE4} \
+	--unpaired1 ${OUTPUTFILE5} \
+	--unpaired2 ${OUTPUTFILE6} \
+	--failed_out ${OUTPUTFILE7} \
 	--dont_overwrite \
 	--trim_poly_x \
 	--trim_poly_g \
 	--umi \
 	--umi_loc read1 \
 	--umi_len 12 \
-	-P 100 \
-	-j ${OUTPUTFILE6} \
-	-h ${OUTPUTFILE7} \
+	--overrepresentation_analysis \
+	--overrepresentation_sampling 100 \
 	--detect_adapter_for_pe \
 	--qualified_quality_phred 20 \
 	--thread 10
@@ -225,6 +246,7 @@ Output file: ${OUTPUTFILE1}
 Output file: ${OUTPUTFILE2}
 Output file: ${OUTPUTFILE3}
 Output file: ${OUTPUTFILE4}
+Output directory: ${FAILQCDIR}
 Output file: ${OUTPUTFILE5}
 Output file: ${OUTPUTFILE6}
 Output file: ${OUTPUTFILE7}
