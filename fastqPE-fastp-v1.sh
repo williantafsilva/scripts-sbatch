@@ -218,8 +218,8 @@ fastp \
 	--in2 ${INPUTFILE2} \
 	--out1 ${OUTPUTFILE1} \
 	--out2 ${OUTPUTFILE2} \
-	-j ${OUTPUTFILE3} \
-	-h ${OUTPUTFILE4} \
+	--json ${OUTPUTFILE3} \
+	--html ${OUTPUTFILE4} \
 	--unpaired1 ${OUTPUTFILE5} \
 	--unpaired2 ${OUTPUTFILE6} \
 	--failed_out ${OUTPUTFILE7} \
@@ -229,7 +229,8 @@ fastp \
 	--umi \
 	--umi_loc read1 \
 	--umi_len 12 \
-	-P 100 \
+	--overrepresentation_analysis \
+	--overrepresentation_sampling 100 \
 	--detect_adapter_for_pe \
 	--qualified_quality_phred 20 \
 	--thread 10
