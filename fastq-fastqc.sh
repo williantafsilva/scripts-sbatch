@@ -141,7 +141,7 @@ echo "##OUTPUT:"
 echo 
 
 ##Output file (as an extension of the input file/directory).
-OUTPUTDIRPREFIX=$(echo ${INPUTDIRNAME} | sed 's/.*-//')
+OUTPUTDIRPREFIX=$(echo ${INPUTDIRNAME} | sed 's/.*-//' | sed 's/-job[0-9].*$//')
 OUTPUTDIRNAME=$(echo "${OUTPUTDIRPREFIX}.fastqc-job${JOBID}") 
 OUTPUTDIR=$(echo "${OUTPUTLOCATION}/${OUTPUTDIRNAME}")
 echo "OUTPUTLOCATION: ${OUTPUTLOCATION}
